@@ -2,7 +2,6 @@ language: julia
 julia:
     - 1.2
 codecov: true
-coveralls: true
 os:
     - linux
     - osx
