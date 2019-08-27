@@ -1,7 +1,7 @@
 name = "EmpiricalModeDecomposition"
 uuid = "6a34a51b-2f4a-4636-bd3c-e47519ebd0d9"
 authors = ["Atmn Patel <atmndp@gmail.com>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 AbstractFFTs = "621f4979-c628-5d54-868e-fcf4e3e8185c"
