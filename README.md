@@ -1,6 +1,6 @@
 # EmpiricalModeDecomposition.jl
 
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://atmnpatel.github.io/EmpiricalModeDecomposition.jl/stable)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://atmnpatel.github.io/EmpiricalModeDecomposition.jl/dev)
 [![codecov](https://codecov.io/gh/atmnpatel/EmpiricalModeDecomposition.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/atmnpatel/EmpiricalModeDecomposition.jl)
 [![Build Status](https://travis-ci.com/atmnpatel/EmpiricalModeDecomposition.jl.svg?branch=master)](https://travis-ci.com/atmnpatel/EmpiricalModeDecomposition.jl)
 
