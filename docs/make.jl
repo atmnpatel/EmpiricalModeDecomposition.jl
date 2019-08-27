@@ -12,3 +12,6 @@ makedocs(sitename="EmpiricalModeDecomposition.jl Documentation",
                 "Methods" => "methods.md"
               ]
        )
+deploydocs(
+           repo = "github.com/atmnpatel/EmpiricalModeDecomposition.jl.git"
+)
