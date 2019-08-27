@@ -2,7 +2,7 @@ using Documenter
 push!(LOAD_PATH,"../src/")
 using EmpiricalModeDecomposition
 
-makedocs(sitename="EMD.jl Documentation",
+makedocs(sitename="EmpiricalModeDecomposition.jl Documentation",
         pages = [
                  "Library" => [
                     "Reference" => "reference.md",
