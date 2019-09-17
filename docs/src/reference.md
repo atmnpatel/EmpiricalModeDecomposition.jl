@@ -1,5 +1,10 @@
 # Library Reference
 
+
+```@docs
+EMDConvergence
+```
+
 ```@docs
 emd(input::Vector{Float64}, s::EMDSetting)
 ```
@@ -16,3 +21,10 @@ eemd(input::Vector{Float64}, s::EEMDSetting)
 EEMDSetting
 ```
 
+```@docs
+CEEMDAN
+```
+
+```@docs
+CEEMDANSetting
+```

@@ -2,24 +2,17 @@
 
 "Store the settings required for performing the EMD."
 struct EMDSetting
-    "Number of siftings"
-    num_siftings::Int64
-    "S number"
-    s_num::Int64
-    "Number of IMFS"
+   "Number of IMFS"
     m::Int64
-    function EMDSetting(n::Int64, num_siftings::Int64, s_num::Int64, m::Int64) 
-        if (s_num == 0 && num_siftings == 0) || (num_siftings < 0 || s_num < 0)
-            throw(DomainError("Invalid EMD Settings."))
-        end
+    conv::EMDConvergence
 
+    function EMDSetting(n::Int64, num_siftings::Int64, s_num::Int64, m::Int64) 
         if m <= 0
             @warn "Invalid number of IMFs, will set to a default number."
             m = num_imfs(n)
         end
-        
 
-        return new(num_siftings, s_num, m)
+        return new(m, EMDConvergence(num_siftings, s_num))
     end
 end
 
@@ -35,35 +28,62 @@ function emd(input_::Vector{Float64}, s::EMDSetting)
     residue = deepcopy(input_)
     n = length(residue)
 
-    output = zeros(n, s.m)
+    output = zeros(n, s.m+1)
 
-    for j = 1:s.m-1
+    for j = 1:s.m
         if j != 1
             input = deepcopy(residue)
         end
 
-        sift!(input, s)
+        input -= local_mean(input, s)
 
         residue -= input
         output[:,j] += input
     end
 
-    output[:,s.m] += residue
+    output[:,s.m+1] += residue
 
     return output
 end
 
+## Auxiliary Functions
+
+"""
+    emd_k(input::Vector{Float64}, s::EMDSetting, k::Int64)
+
+Return the k-th IMF defined by the EMD convergence criteria.
+"""
+function emd_k(input_::Vector{Float64}, s::EMDSetting, k::Int64)
+    input = deepcopy(input_)
+    residue = deepcopy(input_)
+    n = length(residue)
+
+    output = zeros(n, k)
+
+    for j = 1:k
+        if j != 1
+            input = deepcopy(residue)
+        end
+
+        input -= local_mean(input, s)
+
+        residue -= input
+        output[:,j] += input
+    end
+
+    return output[:, k]
+end
 
 ## Helper functions
-
+#
+#
 """
-    sift!(input::Vector{Float64}, s::EMDSetting)
+    local_mean(input::Vector{Float64}, s::EMDSetting)
 
-Return the IMF that satisfies the given settings. In particular, it returns
-an IMF that satisifes the S number criterion that is found within the set
-number of siftings.
+Return the local mean of the input given extrema found by the EMD settings.
 """
-function sift!(input::Vector{Float64}, s::EMDSetting)
+
+function local_mean(input::Vector{Float64}, s::EMDSetting)
     n = length(input)
     max_spline = zeros(n)
     min_spline = zeros(n)
@@ -81,7 +101,7 @@ function sift!(input::Vector{Float64}, s::EMDSetting)
     prev_num_min = -1
     prev_num_zc = -1
     
-    while (s.num_siftings == 0 || sift_counter < s.num_siftings)
+    while (s.conv.num_siftings == 0 || sift_counter < s.conv.num_siftings)
         sift_counter += 1
         prev_num_max = num_max
         prev_num_min = num_min
@@ -89,13 +109,13 @@ function sift!(input::Vector{Float64}, s::EMDSetting)
         num_max, num_min, num_zc = find_extrema!(input, max_x, max_y,
                                                     min_x, min_y)
 
-        if (s.s_num != 0)
+        if (s.conv.s_num != 0)
             max_diff = num_max - prev_num_max
             min_diff = num_min - prev_num_min
             zc_diff = num_zc - prev_num_zc
             if abs(max_diff) + abs(min_diff) + abs(zc_diff) <= 1
                 s_counter += 1
-                if s_counter >= s.s_num
+                if s_counter >= s.conv.s_num
                     num_diff = num_min + num_max - 4 - num_zc
                     if abs(num_diff) <= 1
                         break;
@@ -110,9 +130,7 @@ function sift!(input::Vector{Float64}, s::EMDSetting)
     max_spline = evaluate_spline(max_x, max_y, num_max)
     min_spline = evaluate_spline(min_x, min_y, num_min)
 
-    for i in eachindex(input)
-        global input[i] -= 0.5(max_spline[i] + min_spline[i])
-    end
+    return 0.5*(max_spline + min_spline)
 end
 
 

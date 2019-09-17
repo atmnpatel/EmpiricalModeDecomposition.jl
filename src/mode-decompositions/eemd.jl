@@ -48,10 +48,10 @@ function eemd(input::Vector{Float64}, s::EEMDSetting)
         noise_sigma = zero(s.noise_strength)
     end
 
-    output = zeros(n, s.emd_setting.m)
+    output = zeros(n, s.emd_setting.m + 1)
     rng = Normal(0.0, 1.0)
 
-    for en_i=1:s.ensemble_size
+    output = @distributed (+) for en_i=1:s.ensemble_size
         inp = zeros(n)
 	    
         if s.noise_strength == 0.0
@@ -65,7 +65,7 @@ function eemd(input::Vector{Float64}, s::EEMDSetting)
 		    end
 	    end
 
-        output += emd(inp, s.emd_setting)
+        emd(inp, s.emd_setting)
     end
 
     if s.ensemble_size != 1

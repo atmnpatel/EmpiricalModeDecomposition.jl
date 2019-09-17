@@ -1,7 +1,7 @@
 # Internal functions
 
 ```@docs
-EmpiricalModeDecomposition.sift!(input::Vector{Float64}, s::EMDSetting)
+EmpiricalModeDecomposition.local_mean(input::Vector{Float64}, s::EMDSetting)
 ```
 
 ```@docs

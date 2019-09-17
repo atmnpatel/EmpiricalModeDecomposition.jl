@@ -12,7 +12,7 @@
 
         output = eemd(x, s)
 
-        @test size(output, 2) == s.emd_setting.m
+        @test size(output, 2) == s.emd_setting.m + 1
 
         recovered = zeros(n)
 
@@ -41,7 +41,7 @@
 
         output = eemd(input, s)
 
-        @test size(output, 2) == s.emd_setting.m
+        @test size(output, 2) == s.emd_setting.m + 1
 
         recovered = zeros(N)
 

@@ -1,7 +1,8 @@
-@testset "BasicEMD" begin
-    @testset "BasicEMD Test 1" begin
+@testset "CEEMDAN" begin
+    @testset "CEEMDAN Test 1" begin
+        snrs = ones(10)./20
         n = 200
-        s = EMDSetting(n, 50, 10, 2)
+        s = CEEMDANSetting(n, 50, 10, 2, 10, snrs, 450)
 
         t = collect(range(0,1, length=n))
         x = zeros(n)
@@ -10,9 +11,9 @@
             x[i] = cos(22*pi*t[i]^2) + 6*t[i]^2
         end
 
-        output = emd(x, s)
+        output = ceemdan(x, s)
 
-        @test size(output, 2) == s.m + 1
+        @test size(output, 2) == s.emd_setting.m
 
         recovered = zeros(n)
 
@@ -20,12 +21,13 @@
             recovered += output[:, i]
         end
 
-        @test recovered == x || isapprox(recovered, x)
+        @test recovered == x || isapprox(recovered, x, rtol=0.10)
     end
 
-    @testset "BasicEMD Test 2" begin
+    @testset "CEEMDAN Test 2" begin
+        snrs = ones(250)./20
         N = 1024
-        s = EMDSetting(N, 50, 10, 10)
+        s = CEEMDANSetting(N, 50, 10, 10, 250, snrs, 200)
 
         function input_signal(x::Float64)
             omega = 2*pi/(N-1)
@@ -39,9 +41,9 @@
         end
 
 
-        output = emd(input, s)
+        output = ceemdan(input, s)
 
-        @test size(output, 2) == s.m + 1
+        @test size(output, 2) == s.emd_setting.m
 
         recovered = zeros(N)
 
@@ -49,7 +51,7 @@
             recovered += output[:, i]
         end
 
-        @test recovered == input || isapprox(recovered, input)
+        @test isapprox(recovered,input, rtol=0.1)
     end
 end
 
